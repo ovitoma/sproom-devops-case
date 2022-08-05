@@ -21,12 +21,8 @@ on:
 
 jobs:
 
-  call-build:
-    uses: ./.github/workflows/maven-build.yml
-    secrets:
-      AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
-
-  call-azure-deploy:
+  init:
+    runs-on: ubuntu-latest
     steps:
       - name: Init resource group name
         id: rg
@@ -38,10 +34,20 @@ jobs:
         run: |
           PROJECT_NAME_INPUT=${{ github.event.inputs.projectName }}
           echo "::set-ouput project=value::${PROJECT_NAME_INPUT:-"test1"}""
+    outputs:
+      rg: ${{ steps.rg.outputs.value }}
+      project: ${{ steps.project.outputs.value }}
+
+  call-build:
+    uses: ./.github/workflows/maven-build.yml
+    secrets:
+      AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
+
+  call-azure-deploy:
     uses: ./.github/workflows/azure-deploy.yml
     with:
-      resourceGroup: ${{ steps.rg.outputs.value }}
-      projectName: ${{ steps.project.outputs.value }}
+      resourceGroup: ${{ needs.init.outputs.rg }}
+      projectName: ${{ needs.init.outputs.project }}
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
@@ -49,7 +55,7 @@ jobs:
       AZURE_ARTIFACTS_LOCATION_SAS_TOKEN: ${{ secrets.AZURE_ARTIFACTS_LOCATION_SAS_TOKEN }}
       VM_ADMIN_USERNAME: ${{ secrets.VM_ADMIN_USERNAME }}
       VM_ADMIN_PUBLIC_KEY: ${{ secrets.VM_ADMIN_PUBLIC_KEY }}
-    needs: call-build
+    needs: [init, call-build]
 
   call-setup-env:
     uses: ./.github/workflows/setup-env.yml
