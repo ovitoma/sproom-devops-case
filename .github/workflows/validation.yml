@@ -40,7 +40,7 @@ jobs:
 
       - name: Run the API and Postman's tests
         run: | 
-          newman run "validation/file_service.postman_collection.json" -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme  > testResults/runreport1.html
+          newman run "validation/file_service.postman_collection.json" 
         env:
           base_url: ${{ inputs.ipAddr }}
 
