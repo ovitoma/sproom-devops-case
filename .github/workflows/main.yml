@@ -57,9 +57,7 @@ jobs:
       VM_ADMIN_USERNAME: ${{ secrets.VM_ADMIN_USERNAME }}
       VM_ADMIN_PUBLIC_KEY: ${{ secrets.VM_ADMIN_PUBLIC_KEY }}
     needs: [init, call-build]
-    outputs:
-      ipAddr: ${{ steps.infra.outputs.ipAddress }}
-
+    
   call-validation:
     uses: ./.github/workflows/validation.yml
     with:
