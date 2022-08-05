@@ -57,6 +57,14 @@ jobs:
       VM_ADMIN_USERNAME: ${{ secrets.VM_ADMIN_USERNAME }}
       VM_ADMIN_PUBLIC_KEY: ${{ secrets.VM_ADMIN_PUBLIC_KEY }}
     needs: [init, call-build]
+
+  debug:
+    runs-on: ubuntu-latest
+    with:
+      ipAddr: ${{ needs.call-azure-deploy.outputs.ipAddr }}
+    steps:
+      - name: Show ip address
+        run: echo "ip addr ${{ inputs.ipAddr }}"    
     
   call-validation:
     uses: ./.github/workflows/validation.yml
