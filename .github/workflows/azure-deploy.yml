@@ -73,8 +73,6 @@ jobs:
             adminUsername=${{ secrets.VM_ADMIN_USERNAME }}
             adminPublicKey="${{ secrets.VM_ADMIN_PUBLIC_KEY }}"
             application=${{ steps.app.outputs.version }}            
-        run: echo ${{ steps.infra.outputs.ipAddress }}
-
 
       # - name: logout
       #       run: |
