@@ -1,0 +1,32 @@
+name: Validation
+
+on: 
+  workflow_call:
+    inputs:
+      ipAddr:
+        type: string
+        required: true
+
+jobs:
+  
+  postman:
+    runs-on: ubuntu-latest
+
+    steps:    
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+  
+      - name: Install newman
+        run: npm install -g newman      
+
+      - name: Run the API and Postman's tests
+        run: | 
+          npm run start:dev &
+          sleep 60
+          newman run "validation/file_service.postman_collection.json"
+        env:
+          base_url: ${{ inputs.ipAddr }}

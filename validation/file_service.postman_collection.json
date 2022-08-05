@@ -1,0 +1,56 @@
+{
+	"info": {
+		"_postman_id": "96d17236-a507-4b49-aeb2-78fdfe462269",
+		"name": "file_service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22480645"
+	},
+	"item": [
+		{
+			"name": "localhost:8080/randomFile",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}:8080/randomFile",
+					"host": [
+						"{{base_url}}"
+					],
+					"port": "8080",
+					"path": [
+						"randomFile"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "localhost"
+		}
+	]
+}
