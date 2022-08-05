@@ -5,17 +5,6 @@ on:
   push:
     branches:
       - main
-    inputs:     
-      resourceGroup:
-        description: 'Azure resource group used for deployment'     
-        required: true
-        default: 'my-resource-group-1' 
-        type: string
-      projectName:
-        description: 'Azure resources will be prefixed with this value'     
-        required: true
-        default: 'test1' 
-        type: string
 
   workflow_dispatch:
     inputs:
@@ -31,6 +20,20 @@ on:
         type: string
 
 jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Init resource group name
+        id: rg
+        run: |
+          RG_INPUT=${{ github.event.inputs.resourceGroup }}
+          echo "::set-ouput rg=value::${RG_INPUT:-"my-resource-group-1"}"
+      - name: Init project name
+        id: project
+        run: |
+          PROJECT_NAME_INPUT=${{ github.event.inputs.projectName }}
+          echo "::set-ouput project=value::${PROJECT_NAME_INPUT:-"test1"}""
+
   call-build:
     uses: ./.github/workflows/maven-build.yml
     secrets:
@@ -39,8 +42,8 @@ jobs:
   call-azure-deploy:
     uses: ./.github/workflows/azure-deploy.yml
     with:
-      resourceGroup: ${{ inputs.resourceGroup }}
-      projectName: ${{ inputs.projectName }}
+      resourceGroup: ${{ steps.rg.outputs.value }}
+      projectName: ${{ steps.project.outputs.value }}
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
