@@ -2,6 +2,8 @@ package com.ovi.fileservice;
 
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
+import com.ovi.fileservice.metrics.MicrometerRegistry;
+import io.micrometer.core.instrument.Counter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,18 @@ import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 public class FileDownloadController {
 
     private static final Logger logger = LogManager.getLogger(FileDownloadController.class);
+    private final MicrometerRegistry micrometerRegistry;
     RandomFile randomFile;
+
+    Counter invalidPdfCounter;
+    Counter pdfCounter;
+    Counter pngCounter;
+
+    @Autowired
+    public FileDownloadController(MicrometerRegistry micrometerRegistry) {
+        this.micrometerRegistry = micrometerRegistry;
+        initCounters();
+    }
 
     @Autowired
     public void setRandomFile(RandomFile randomFile) {
@@ -57,6 +70,8 @@ public class FileDownloadController {
 
         if (mediaType.toString().equals(APPLICATION_PDF_VALUE)) {
             checkIfCorrupt(file);
+        } else {
+            pngCounter.increment();
         }
 
         return ResponseEntity.ok().contentType(mediaType).header(HttpHeaders.CONTENT_DISPOSITION, headerValue).body(urlResource);
@@ -68,8 +83,10 @@ public class FileDownloadController {
             PdfReader pdfReader = new PdfReader(file.toFile().getPath());
             PdfTextExtractor.getTextFromPage(pdfReader, 1);
         } catch (Exception e) {
+            invalidPdfCounter.increment();
             logger.warn(file.getFileName() + " is corrupted");
         }
+        pdfCounter.increment();
     }
 
     private MediaType getMediaType(Path file) {
@@ -78,5 +95,11 @@ public class FileDownloadController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void initCounters() {
+        invalidPdfCounter = this.micrometerRegistry.getMeterRegistry().counter("file-service.invalid-pdf");
+        pdfCounter = this.micrometerRegistry.getMeterRegistry().counter("file-service.pdf");
+        pngCounter = this.micrometerRegistry.getMeterRegistry().counter("file-service.png-counter");
     }
 }
