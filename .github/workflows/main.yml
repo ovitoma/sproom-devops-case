@@ -49,6 +49,7 @@ jobs:
       resourceGroup: ${{ needs.init.outputs.rg }}
       projectName: ${{ needs.init.outputs.project }}
     secrets:
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
       AZURE_ARTIFACTS_LOCATION: ${{ secrets.AZURE_ARTIFACTS_LOCATION }}

@@ -12,6 +12,8 @@ on:
         type: string
         required: true
     secrets:
+      AZURE_SUBSCRIPTION_ID:
+        required: true
       AZURE_CREDENTIALS:
         required: true
       AZURE_STORAGE_KEY:
@@ -61,7 +63,7 @@ jobs:
         id: infra
         uses: azure/arm-deploy@v1
         with:
-          subscriptionId: 03f9f261-fa1c-4236-a4e2-d10d9d27659b
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ inputs.resourceGroup }}
           template: azure/infrastructure.json
           parameters:
