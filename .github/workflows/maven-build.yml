@@ -1,6 +1,10 @@
 name: Build
 
-on: [workflow_call]
+on: 
+  workflow_call:
+    secrets:
+      AZURE_STORAGE_KEY:
+        required: true
 
 jobs:
 
@@ -29,26 +33,26 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-              az storage file upload --account-key TdgMEKJsfgkZu+tK3xX6nlF5Tflc5PwzUqQL2PqQg8dHaPNJRalkz+1QrUrKrfuk8jlH6ID1pst++AStWerl1A== --account-name ovistorageaccount --source azure/nested/ipAddr.json --path ipAddr.json --share-name nested
+              az storage file upload --account-key ${{ secrets.AZURE_STORAGE_KEY }} --account-name ovistorageaccount --source azure/nested/ipAddr.json --path ipAddr.json --share-name nested
 
       - name: Upload the scripts
         uses: azure/CLI@v1
         with:
           inlineScript: |
-              az storage file upload --account-key TdgMEKJsfgkZu+tK3xX6nlF5Tflc5PwzUqQL2PqQg8dHaPNJRalkz+1QrUrKrfuk8jlH6ID1pst++AStWerl1A== --account-name ovistorageaccount --source azure/scripts/remote-script.sh --path remote-script.sh --share-name scripts
+              az storage file upload --account-key ${{ secrets.AZURE_STORAGE_KEY }} --account-name ovistorageaccount --source azure/scripts/remote-script.sh --path remote-script.sh --share-name scripts
 
       - name: Cleanup app folder
         uses: azure/CLI@v1
         with:
           inlineScript: |
-              az storage file delete-batch --account-key 'TdgMEKJsfgkZu+tK3xX6nlF5Tflc5PwzUqQL2PqQg8dHaPNJRalkz+1QrUrKrfuk8jlH6ID1pst++AStWerl1A==' --account-name 'ovistorageaccount' --pattern *.zip --source 'app' 
+              az storage file delete-batch --account-key ${{ secrets.AZURE_STORAGE_KEY }} --account-name 'ovistorageaccount' --pattern *.zip --source 'app' 
 
 
       - name: Upload application to storage
         uses: azure/CLI@v1
         with:
           inlineScript: |
-              az storage file upload --account-key TdgMEKJsfgkZu+tK3xX6nlF5Tflc5PwzUqQL2PqQg8dHaPNJRalkz+1QrUrKrfuk8jlH6ID1pst++AStWerl1A== --account-name ovistorageaccount --source ./file-service/target/file-service-*.zip --share-name app
+              az storage file upload --account-key ${{ secrets.AZURE_STORAGE_KEY }} --account-name ovistorageaccount --source ./file-service/target/file-service-*.zip --share-name app
 
 
   
