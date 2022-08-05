@@ -28,12 +28,12 @@ jobs:
         id: rg
         run: |
           RG_INPUT=${{ github.event.inputs.resourceGroup }}
-          echo "::set-ouput rg=value::${RG_INPUT:-"my-resource-group-1"}"
+          echo '::set-ouput rg=value::${RG_INPUT:-"my-resource-group-1"}'
       - name: Init project name
         id: project
         run: |
           PROJECT_NAME_INPUT=${{ github.event.inputs.projectName }}
-          echo "::set-ouput project=value::${PROJECT_NAME_INPUT:-"test1"}""
+          echo '::set-ouput project=value::${PROJECT_NAME_INPUT:-"test1"}'
     outputs:
       rg: ${{ steps.rg.outputs.value }}
       project: ${{ steps.project.outputs.value }}
