@@ -15,7 +15,7 @@ jobs:
     steps:    
 
       - name: Show ip address
-        run: echo "ip addr ${{ inputs.ipAddress }}"
+        run: echo "ip addr ${{ inputs.ipAddr }}"
 
       - name: Checkout source code
         uses: actions/checkout@v2
