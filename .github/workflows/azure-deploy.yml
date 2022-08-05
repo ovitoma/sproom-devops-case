@@ -55,12 +55,12 @@ jobs:
         uses: azure/arm-deploy@v1
         with:
           subscriptionId: 03f9f261-fa1c-4236-a4e2-d10d9d27659b
-          resourceGroupName: ${{ inputs.resourceGroup }}
+          resourceGroupName: ${{ github.event.inputs.resourceGroup }}
           template: azure/infrastructure.json
           parameters:
             _artifactsLocation="${{ secrets.AZURE_ARTIFACTS_LOCATION }}"
             _artifactsLocationSasToken="${{ secrets.AZURE_ARTIFACTS_LOCATION_SAS_TOKEN }}"            
-            projectName=${{ inputs.projectName }}
+            projectName=${{ github.events.inputs.projectName }}
             adminUsername=${{ secrets.VM_ADMIN_USERNAME }}
             adminPublicKey="${{ secrets.VM_ADMIN_PUBLIC_KEY }}"
             application=${{ steps.app.outputs.version }}            
