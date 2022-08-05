@@ -20,8 +20,13 @@ on:
         type: string
 
 jobs:
-  init:
-    runs-on: ubuntu-latest
+
+  call-build:
+    uses: ./.github/workflows/maven-build.yml
+    secrets:
+      AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
+
+  call-azure-deploy:
     steps:
       - name: Init resource group name
         id: rg
@@ -33,13 +38,6 @@ jobs:
         run: |
           PROJECT_NAME_INPUT=${{ github.event.inputs.projectName }}
           echo "::set-ouput project=value::${PROJECT_NAME_INPUT:-"test1"}""
-
-  call-build:
-    uses: ./.github/workflows/maven-build.yml
-    secrets:
-      AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
-
-  call-azure-deploy:
     uses: ./.github/workflows/azure-deploy.yml
     with:
       resourceGroup: ${{ steps.rg.outputs.value }}
