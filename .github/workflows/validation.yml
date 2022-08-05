@@ -40,9 +40,7 @@ jobs:
 
       - name: Run the API and Postman's tests
         run: | 
-          newman run "validation/file_service.postman_collection.json" 
-        env:
-          base_url: ${{ inputs.ipAddr }}
+          newman run "validation/file_service.postman_collection.json" --env-var "base_url=${{ inputs.ipAddr }}"  
 
       - name: Output the run Details
         uses: actions/upload-artifact@v2
