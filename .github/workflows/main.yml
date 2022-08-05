@@ -62,11 +62,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Show ip address
-        run: echo "ip addr ${{ needs.deploy.outputs.ipAddr }}"    
+        run: echo "ip addr ${{ needs.call-azure-deploy.outputs.ipAddr }}"    
     needs: call-azure-deploy
     
   call-validation:
     uses: ./.github/workflows/validation.yml
     with:
-      ipAddr: 20.216.141.63
+      ipAddr: ${{ needs.call-azure-deploy.outputs.ipAddr }}
     needs: call-azure-deploy

@@ -26,6 +26,10 @@ on:
         required: true
       VM_ADMIN_PUBLIC_KEY:
         required: true
+    outputs:
+      ipAddr:
+        description: "VM Ip Address"
+        value: ${{ jobs.deploy.outputs.ipAddr }}
 
 jobs:
 
