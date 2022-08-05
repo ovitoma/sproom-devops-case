@@ -39,8 +39,8 @@ jobs:
   call-azure-deploy:
     uses: ./.github/workflows/azure-deploy.yml
     with:
-      resourceGroup: ${{ github.event.inputs.resourceGroup }}
-      projectName: ${{ github.event.inputs.projectName }}
+      resourceGroup: ${{ inputs.resourceGroup }}
+      projectName: ${{ inputs.projectName }}
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
