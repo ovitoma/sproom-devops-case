@@ -1,0 +1,54 @@
+name: Build
+
+on: [workflow_call]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 16
+        uses: actions/setup-java@v1
+        with:
+          java-version: 16
+
+      - name: Cache maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build project 
+        run: cd file-service; mvn -B package
+
+      - name: Upload the nested template to storage
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+              az storage file upload --account-key TdgMEKJsfgkZu+tK3xX6nlF5Tflc5PwzUqQL2PqQg8dHaPNJRalkz+1QrUrKrfuk8jlH6ID1pst++AStWerl1A== --account-name ovistorageaccount --source azure/nested/ipAddr.json --path ipAddr.json --share-name nested
+
+      - name: Upload the scripts
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+              az storage file upload --account-key TdgMEKJsfgkZu+tK3xX6nlF5Tflc5PwzUqQL2PqQg8dHaPNJRalkz+1QrUrKrfuk8jlH6ID1pst++AStWerl1A== --account-name ovistorageaccount --source azure/scripts/remote-script.sh --path remote-script.sh --share-name scripts
+
+      - name: Cleanup app folder
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+              az storage file delete-batch --account-key 'TdgMEKJsfgkZu+tK3xX6nlF5Tflc5PwzUqQL2PqQg8dHaPNJRalkz+1QrUrKrfuk8jlH6ID1pst++AStWerl1A==' --account-name 'ovistorageaccount' --pattern *.zip --source 'app' 
+
+
+      - name: Upload application to storage
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+              az storage file upload --account-key TdgMEKJsfgkZu+tK3xX6nlF5Tflc5PwzUqQL2PqQg8dHaPNJRalkz+1QrUrKrfuk8jlH6ID1pst++AStWerl1A== --account-name ovistorageaccount --source ./file-service/target/file-service-*.zip --share-name app
+
+
+  

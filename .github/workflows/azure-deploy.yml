@@ -1,0 +1,100 @@
+
+
+name: Azure deploy
+
+on: 
+  workflow_call:
+    secrets:
+      AZURE_CREDENTIALS:
+        required: true
+
+jobs:
+
+  deploy: 
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: List application
+        id: app
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+              version=$(az storage file list --account-key TdgMEKJsfgkZu+tK3xX6nlF5Tflc5PwzUqQL2PqQg8dHaPNJRalkz+1QrUrKrfuk8jlH6ID1pst++AStWerl1A== --account-name ovistorageaccount --share-name app --query "[].{name:name}" --output tsv)
+              echo "::set-output name=version::$version"
+
+      - name: App version
+        run: echo ${{ steps.app.outputs.version }} 
+
+      - name: Remove vm extension
+        uses: azure/CLI@v1
+        continue-on-error: true
+        with:
+          inlineScript: |
+              az vm extension delete -g my-resource-group-1 --vm-name test1-vm -n remote-script
+
+      - name: Deploy infrastructure (ARM)
+        id: infra
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: 03f9f261-fa1c-4236-a4e2-d10d9d27659b
+          resourceGroupName: my-resource-group-1
+          template: azure/infrastructure.json
+          parameters:
+            _artifactsLocation="https://ovistorageaccount.file.core.windows.net"
+            _artifactsLocationSasToken="?sv=2021-06-08&ss=f&srt=o&sp=r&se=2022-09-01T19:47:41Z&st=2022-08-02T11:47:41Z&spr=https&sig=OJsrTNGeh5PXODkikOHLRyln65gRzMksNMbQxogd0NM%3D"            
+            projectName=test1
+            adminUsername=oviadmin
+            adminPublicKey="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDInGxLAT3ClvVLHK8wE/7z0Ln/f2M9S4lfeNtQ4+twDJ7jBK7+LCKB7+ydflW71Xw42DtARsf477neymHbC3GHHpHGAy3GSuw1GNAdTl8yLtRf25c3gu7bpv6L9SM36d9kyAfQMWQmHC8Zp2VW8ECimgX5Ndn/hnpcHHbsOuoddj9108035GnnwUsNqQUflFibb7WARVjzLxbuxEYWtazWC8RTFNbLiXCkX/nfGm2Lh7QZAAcJsRWDnKARu4Px9AXM5v711OeQS/jBRNtsf8X/SoIuVqsp9Gx2BipxrckLg7PZad+rMY+uAycu9otmOaO1h8O8C09ehCCxSwYGa2KWNEaHcEBh9HxUcYr8xcxjBuEErqcQGjt5n/ZNfgSaykEHJNi2C+t3YKLV1801ROtxXUUyynbF/vkuDjvVMmpvvhK/zk+cl4GmwXLHdmpoPM3AsS4PKs+ZQdUSbYRr+UmsPgWGTtuRm5DdHJZ6YZIaFDkQSxACimoIC3GdzDDCyhrpsVquxZmCYuXYNtuG2u5qElifThH2HUDfrXjH1yMhg4K9zqrRzfBRRzUsOsWix5XvxUdbWGCfc9HkrN9j/SNU+c6Kv+oV89D04Rtcl3FC/mizFDifvlA6jVQa9F6ItZDxoBPMQTGuZaAEFMvt4Mge4LBELtzQ1wkA/8daWZqVAQ== your_email@example.com"
+            application=${{ steps.app.outputs.version }}            
+
+      # - name: Remove vm extension
+      #   uses: azure/CLI@v1
+      #   with:
+      #     inlineScript: |
+      #         az vm extension delete -g my-resource-group-1 --vm-name test1-vm -n remote-script
+
+      # - name: Delete application from storage
+      #   uses: azure/CLI@v1
+      #   with:
+      #     inlineScript: |
+      #         az storage file delete --account-key TdgMEKJsfgkZu+tK3xX6nlF5Tflc5PwzUqQL2PqQg8dHaPNJRalkz+1QrUrKrfuk8jlH6ID1pst++AStWerl1A== --account-name ovistorageaccount --path ${{ steps.app.outputs.version }} --share-name app
+
+
+      # - name: Deploy infrastructure
+      #   uses: azure/CLI@v1
+      #   with:
+      #     inlineScript: |
+      #       az deployment group create \
+      #       --name infrastructure-deployment \
+      #       --resource-group my-resource-group-1 \
+      #       --template-file azure/infrastructure.json \
+      #       --parameters \
+      #       projectName=test1 \
+      #       adminUsername=oviadmin \
+      #       adminPublicKey="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCu4Qc5v4KrVSzU0pm0EQAPEEHwhvjNyNBAOQjEY9yOTKlStwMA2JgV96QovmnSqTmyoRCF4szuvIz/cAtR724vX8QrHnETx/FomsV6+jd8b3GKn6V7WhUq7CoXAsOdoxW+JREPEbvhfweFCdTaxw+po4UuntD2U3CVkFbRVlCYHdQgoHtmY77arRO+Rrr9/mx251R74AYsLMX8cpGnxGM9vpCXkWlIalmHS2UsoX7cpapVvFpUrz63KXUeFzevs3vsO3LKK3mHeAfYVFpLnk+8eGdls+0hOg8++H+SaZ3yYil0qG3aJpOv09DVPLwjvl/sv23hd0zbCES8TdlnrQT1 ovidi@DESKTOP-2ID0GB2"
+
+      - name: Public IP
+        run: echo ${{ steps.infra.outputs.ipAddress }}
+
+      # - name: Copy file via ssh password
+      #   uses: appleboy/scp-action@master
+      #   with:
+      #     host: ${{ steps.infra.outputs.publicIp }}
+      #     username: oviadmin
+      #     key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDInGxLAT3ClvVLHK8wE/7z0Ln/f2M9S4lfeNtQ4+twDJ7jBK7+LCKB7+ydflW71Xw42DtARsf477neymHbC3GHHpHGAy3GSuw1GNAdTl8yLtRf25c3gu7bpv6L9SM36d9kyAfQMWQmHC8Zp2VW8ECimgX5Ndn/hnpcHHbsOuoddj9108035GnnwUsNqQUflFibb7WARVjzLxbuxEYWtazWC8RTFNbLiXCkX/nfGm2Lh7QZAAcJsRWDnKARu4Px9AXM5v711OeQS/jBRNtsf8X/SoIuVqsp9Gx2BipxrckLg7PZad+rMY+uAycu9otmOaO1h8O8C09ehCCxSwYGa2KWNEaHcEBh9HxUcYr8xcxjBuEErqcQGjt5n/ZNfgSaykEHJNi2C+t3YKLV1801ROtxXUUyynbF/vkuDjvVMmpvvhK/zk+cl4GmwXLHdmpoPM3AsS4PKs+ZQdUSbYRr+UmsPgWGTtuRm5DdHJZ6YZIaFDkQSxACimoIC3GdzDDCyhrpsVquxZmCYuXYNtuG2u5qElifThH2HUDfrXjH1yMhg4K9zqrRzfBRRzUsOsWix5XvxUdbWGCfc9HkrN9j/SNU+c6Kv+oV89D04Rtcl3FC/mizFDifvlA6jVQa9F6ItZDxoBPMQTGuZaAEFMvt4Mge4LBELtzQ1wkA/8daWZqVAQ== your_email@example.com"
+      #     source: "./file-service/target/file-service-001-SNAPSHOT.jar"
+      #     target: "/tmp/./file-service/target/file-service-001-SNAPSHOT.jar"
+
+
+      # - name: logout
+      #       run: |
+      #             az logout
+      #       if: always()

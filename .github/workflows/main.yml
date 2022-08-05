@@ -1,0 +1,33 @@
+name: Main
+
+on: 
+
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning' 
+        type: choice
+        options:
+        - info
+        - warning
+        - debug 
+
+jobs:
+  call-build:
+    uses: ./.github/workflows/maven-build.yml
+
+  call-azure-deploy:
+    uses: ./.github/workflows/azure-deploy.yml
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+    needs: call-build
+
+  call-setup-env:
+    uses: ./.github/workflows/setup-env.yml
+    needs: call-azure-deploy

@@ -1,0 +1,20 @@
+server:
+  address: 0.0.0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-components: always
+      show-details: always
+      probes:
+        enabled: true
+
+file-service:
+  path: /home/oviadmin/file-service/dummy-pdf-or-png
+
+logging:
+  config: src/main/resources/log4j2.xml
