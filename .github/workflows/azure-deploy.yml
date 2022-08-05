@@ -78,6 +78,10 @@ jobs:
       #       run: |
       #             az logout
       #       if: always()
+
+      - name: Show ip address
+        run: echo "ip addr ${{ steps.infra.outputs.ipAddress }}"
+
     outputs:
       ipAddr: ${{ steps.infra.outputs.ipAddress }}
 

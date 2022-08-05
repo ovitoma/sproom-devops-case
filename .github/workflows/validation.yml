@@ -14,6 +14,9 @@ jobs:
 
     steps:    
 
+      - name: Show ip address
+        run: echo "ip addr ${{ inputs.ipAddress }}"
+
       - name: Checkout source code
         uses: actions/checkout@v2
 
@@ -27,8 +30,6 @@ jobs:
 
       - name: Run the API and Postman's tests
         run: | 
-          npm run start:dev &
-          sleep 60
           newman run "validation/file_service.postman_collection.json"
         env:
           base_url: ${{ inputs.ipAddr }}
