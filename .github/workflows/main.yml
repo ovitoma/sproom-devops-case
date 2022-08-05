@@ -33,7 +33,7 @@ jobs:
         id: project
         run: |
           PROJECT_NAME_INPUT=${{ github.event.inputs.projectName }}
-          echo "::set-ouput name=value::${PROJECT_NAME_INPUT:-'test1'}"
+          echo "::set-output name=value::${PROJECT_NAME_INPUT:-'test1'}"
     outputs:
       rg: ${{ steps.rg.outputs.value }}
       project: ${{ steps.project.outputs.value }}
