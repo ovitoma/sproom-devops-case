@@ -69,7 +69,7 @@
     "vmName": "[concat(parameters('projectName'), '-vm-', parameters('vmId'))]",
     "networkInterfaceName": "[concat(parameters('projectName'), '-nic-', parameters('vmId'))]",
     "lbName": "[concat(parameters('projectName'), '-lb')]",
-    "backendPoolName": "[concat(parameters('projectName'), '-backend-pool-', parameters('vmId'))]",
+    "backendPoolName": "[concat(parameters('projectName'), '-backend-pool-staging')]",
     "availabilitySetName": "[concat(parameters('projectName'), '-avail-set')]",
     "appLocation": "[concat(parameters('_artifactsLocation'), '/app')]"
   },
