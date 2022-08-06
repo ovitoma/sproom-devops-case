@@ -66,5 +66,9 @@ jobs:
   call-validation:
     uses: ./.github/workflows/validation.yml
     with:
+      resourceGroup: ${{ needs.init.outputs.rg }}
+      vmId: ${{ needs.init.outputs.vmId }}
       ipAddr: ${{ needs.init.outputs.ipAddr }}
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
     needs: [init, call-azure-deploy]

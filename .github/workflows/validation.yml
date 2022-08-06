@@ -3,10 +3,18 @@ name: Validation
 on: 
   workflow_call:
     inputs:
+      resourceGroup:
+        type: string
+        required: true
+      vmId:
+        type: string
+        required: true
       ipAddr:
         type: string
         required: true
-
+    secrets:
+      AZURE_CREDENTIALS:
+        required: true
 jobs:
   
   postman:
@@ -38,6 +46,19 @@ jobs:
         run: | 
           newman run "validation/file_service.postman_collection.json" --env-var "base_url=${{ inputs.ipAddr }}"  
 
-      - name: Remove old version
-        if: steps.check-ok.outcome != 'success'
-        run: echo "not ok"
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Remove VM from staging
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az network nic ip-config address-pool remove --resource-group ${{ inputs.resourceGroup }} --address-pool file-service-backend-pool-staging --ip-config-name ipconfig1 --lb-name file-service-lb --nic-name file-service-nic-${{ inputs.vmId }}
+
+      - name: Add VM to production
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az network nic ip-config address-pool add --resource-group ${{ inputs.resourceGroup }} --address-pool file-service-backend-pool-prod --ip-config-name ipconfig1 --lb-name file-service-lb --nic-name file-service-nic-${{ inputs.vmId }}
