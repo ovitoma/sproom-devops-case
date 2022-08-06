@@ -5,7 +5,6 @@ on:
     secrets:
       AZURE_STORAGE_KEY:
         required: true
-
 jobs:
 
   build:
@@ -29,11 +28,11 @@ jobs:
       - name: Build project 
         run: cd file-service; mvn -B package
 
-       - name: Upload the scripts
+      - name: Upload the scripts
         uses: azure/CLI@v1
         with:
           inlineScript: |
-              az storage file upload --account-key ${{ secrets.AZURE_STORAGE_KEY }} --account-name ovistorageaccount --source azure/scripts/remote-script.sh --path remote-script.sh --share-name scripts
+            az storage file upload --account-key ${{ secrets.AZURE_STORAGE_KEY }} --account-name ovistorageaccount --source azure/scripts/remote-script.sh --path remote-script.sh --share-name scripts
 
       - name: Cleanup app folder
         uses: azure/CLI@v1
