@@ -11,7 +11,7 @@ on:
       resourceGroup:
         description: 'Azure resource group used for deployment'     
         required: true
-        default: 'my-resource-group-3' 
+        default: 'my-resource-group-1' 
         type: string
       vmType:
         description: 'Vm Type'     
@@ -36,7 +36,7 @@ jobs:
           echo "::set-output name=value::${VM_TYPE_INPUT:-staging}"
     outputs:
       rg: ${{ steps.rg.outputs.value }}
-      project: ${{ steps.vmType.outputs.value }}
+      vmType: ${{ steps.vmType.outputs.value }}
 
   call-build:
     uses: ./.github/workflows/maven-build.yml
@@ -47,7 +47,7 @@ jobs:
     uses: ./.github/workflows/vm-deploy.yml
     with:
       resourceGroup: ${{ needs.init.outputs.rg }}
-      projectName: ${{ needs.init.outputs.project }}
+      vmType: ${{ needs.init.outputs.vmType }}
     secrets:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
