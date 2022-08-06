@@ -18,6 +18,11 @@ on:
         required: true
         default: 'staging' 
         type: string
+      ipAddr:
+        description: 'Load balancer IP Address'
+        required: true
+        default: 20.216.130.193
+        type: string
 
 jobs:
 
@@ -34,9 +39,15 @@ jobs:
         run: |
           VM_TYPE_INPUT=${{ github.event.inputs.vmType }}
           echo "::set-output name=value::${VM_TYPE_INPUT:-staging}"
+      - name: Init ip address
+        id: ipAddr
+        run: |
+          VM_TYPE_INPUT=${{ github.event.inputs.ipAddr }}
+          echo "::set-output name=value::${VM_TYPE_INPUT:-20.216.130.193}"
     outputs:
       rg: ${{ steps.rg.outputs.value }}
       vmType: ${{ steps.vmType.outputs.value }}
+      ipAddr: ${{ steps.ipAddr.outputs.value }}
 
   call-build:
     uses: ./.github/workflows/maven-build.yml
@@ -57,16 +68,9 @@ jobs:
       VM_ADMIN_USERNAME: ${{ secrets.VM_ADMIN_USERNAME }}
       VM_ADMIN_PUBLIC_KEY: ${{ secrets.VM_ADMIN_PUBLIC_KEY }}
     needs: [init, call-build]
-
-  # debug:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Show ip address
-  #       run: echo "ip addr ${{ needs.call-azure-deploy.outputs.ipAddr }}"    
-  #   needs: call-azure-deploy
     
   call-validation:
     uses: ./.github/workflows/validation.yml
     with:
-      ipAddr: ${{ needs.call-azure-deploy.outputs.ipAddr }}
-    needs: call-azure-deploy
+      ipAddr: ${{ needs.init.outputs.ipAddr }}
+    needs: [init, call-azure-deploy]

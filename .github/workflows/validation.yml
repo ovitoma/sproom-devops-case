@@ -37,8 +37,7 @@ jobs:
         id: check-ok
         run: | 
           newman run "validation/file_service.postman_collection.json" --env-var "base_url=${{ inputs.ipAddr }}"  
-        continue-on-error: true
 
-      - name: Switch old version back
+      - name: Remove old version
         if: steps.check-ok.outcome != 'success'
         run: echo "not ok"

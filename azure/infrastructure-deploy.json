@@ -129,6 +129,66 @@
             }
           }
         ],
+        "loadBalancingRules": [
+          {
+            "name": "[concat(parameters('projectName'), '-lb-rule-prod')]",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('lbName'), 'LoadBanancerFrontEnd')]"
+              },
+              "frontendPort": 8080,
+              "backendPort": 8080,
+              "enableFloatingIp": false,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "probe": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('vNetName'), 'health-check')]"
+              },
+              "disableOutboundSnat": true,
+              "enableTcpReset": false,
+              "backendAddressPools": [
+                {
+                  "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('vNetName'), variables('prodBackendPoolName'))]"
+                }
+              ]
+            }
+          },
+          {
+            "name": "[concat(parameters('projectName'), '-lb-rule-staging')]",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('lbName'), 'LoadBanancerFrontEnd')]"
+              },
+              "frontendPort": 8081,
+              "backendPort": 8080,
+              "enableFloatingIp": false,
+              "protocol": "Tcp",
+              "loadDistribution": "Default",
+              "probe": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('vNetName'), 'health-check')]"
+              },
+              "disableOutboundSnat": true,
+              "enableTcpReset": false,
+              "backendAddressPools": [
+                {
+                  "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('vNetName'), variables('stagingBackendPoolName'))]"
+                }
+              ]
+            }
+          }
+        ],
+        "probes": [
+          {
+            "name": "health-check",
+            "properties": {
+              "protocol": "Http",
+              "port": 8080,
+              "requestPath": "/actuator/health",
+              "intervalInSeconds": 5,
+              "numberOfProbes": 1
+            }
+          }
+        ],
         "backendAddressPools": [
           {
             "name": "[variables('prodBackendPoolName')]"
@@ -137,42 +197,6 @@
             "name": "[variables('stagingBackendPoolName')]"
           }
         ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/loadBalancers/inboundNatRules",
-      "apiVersion": "2021-03-01",
-      "name": "[concat(variables('lbName'), '/file-service-net-rule-prod')]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/loadBalancers', variables('lbName'))]"
-      ],
-      "properties": {
-        "frontendIPConfiguration": {
-          "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('lbName'), 'LoadBanancerFrontEnd')]"
-        },
-        "backendPort": 8080,
-        "protocol": "Tcp",
-        "frontendPort": 8080,
-        "enableFloatingIp": false
-      }
-    },
-    {
-      "type": "Microsoft.Network/loadBalancers/inboundNatRules",
-      "apiVersion": "2021-03-01",
-      "name": "[concat(variables('lbName'), '/file-service-net-rule-staging')]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/loadBalancers', variables('lbName'))]"
-      ],
-      "properties": {
-        "frontendIPConfiguration": {
-          "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('lbName'), 'LoadBanancerFrontEnd')]"
-        },
-        "backendPort": 8080,
-        "protocol": "Tcp",
-        "frontendPort": 8081,
-        "enableFloatingIp": false
       }
     },
     {
