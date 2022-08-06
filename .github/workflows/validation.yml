@@ -20,11 +20,6 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
 
-      # - name: Install dependencies
-      #   run: |
-      #     curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-      #     sudo apt-get install -y nodejs
-
       - name: Install Node
         uses: actions/setup-node@v1
         with:
@@ -39,11 +34,11 @@ jobs:
         run: mkdir -p testResults
 
       - name: Run the API and Postman's tests
+        id: check-ok
         run: | 
           newman run "validation/file_service.postman_collection.json" --env-var "base_url=${{ inputs.ipAddr }}"  
+        continue-on-error: true
 
-      - name: Output the run Details
-        uses: actions/upload-artifact@v2
-        with:
-          name: RunReports
-          path: testResults
+      - name: Switch old version back
+        if: steps.check-ok.outcome != 'success'
+        run: echo "not ok"

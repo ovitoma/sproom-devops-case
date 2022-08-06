@@ -1,0 +1,46 @@
+name: Azure deploy
+
+on: 
+  workflow_call:
+    inputs:
+      resourceGroup:
+        type: string
+        required: true
+      projectName:
+        type: string
+        required: true
+    secrets:
+      AZURE_SUBSCRIPTION_ID:
+        required: true
+      AZURE_CREDENTIALS:
+        required: true
+
+jobs:
+
+  deploy: 
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Deploy infrastructure (ARM)
+        id: infra
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ inputs.resourceGroup }}
+          template: azure/infrastructure-deploy.json        
+
+      - name: Azure logout
+        run: |
+              az logout
+        if: always()
+
+
+

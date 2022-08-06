@@ -13,10 +13,10 @@ on:
         required: true
         default: 'my-resource-group-1' 
         type: string
-      projectName:
-        description: 'Azure resources will be prefixed with this value'     
+      vmType:
+        description: 'Vm Type'     
         required: true
-        default: 'test1' 
+        default: 'staging' 
         type: string
 
 jobs:
@@ -28,15 +28,15 @@ jobs:
         id: rg
         run: |
           RG_INPUT=${{ github.event.inputs.resourceGroup }}
-          echo "::set-output name=value::${RG_INPUT:-my-resource-group-1}"
-      - name: Init project name
-        id: project
+          echo "::set-output name=value::${RG_INPUT:-my-resource-group-3}"
+      - name: Init vm type
+        id: vmType
         run: |
-          PROJECT_NAME_INPUT=${{ github.event.inputs.projectName }}
-          echo "::set-output name=value::${PROJECT_NAME_INPUT:-test1}"
+          VM_TYPE_INPUT=${{ github.event.inputs.vmType }}
+          echo "::set-output name=value::${VM_TYPE_INPUT:-staging}"
     outputs:
       rg: ${{ steps.rg.outputs.value }}
-      project: ${{ steps.project.outputs.value }}
+      project: ${{ steps.vmType.outputs.value }}
 
   call-build:
     uses: ./.github/workflows/maven-build.yml
