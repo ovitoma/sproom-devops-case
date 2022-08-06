@@ -52,12 +52,12 @@ jobs:
       - name: App version
         run: echo ${{ steps.app.outputs.version }} 
 
-      - name: Remove vm extension
-        uses: azure/CLI@v1
-        continue-on-error: true
-        with:
-          inlineScript: |
-              az vm extension delete -g ${{ inputs.resourceGroup }} --vm-name file-serice-vm-${{ inputs.vmId }} -n remote-script
+      # - name: Remove vm extension
+      #   uses: azure/CLI@v1
+      #   continue-on-error: true
+      #   with:
+      #     inlineScript: |
+      #         az vm extension delete -g ${{ inputs.resourceGroup }} --vm-name file-serice-vm-${{ inputs.vmId }} -n remote-script
 
       - name: Deploy infrastructure (ARM)
         id: infra

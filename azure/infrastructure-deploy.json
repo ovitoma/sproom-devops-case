@@ -115,7 +115,7 @@
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]"
       ],
       "sku": {
-        "name": "Basic",
+        "name": "Standard",
         "tier": "Regional"
       },
       "properties": {
