@@ -28,7 +28,7 @@ jobs:
         id: rg
         run: |
           RG_INPUT=${{ github.event.inputs.resourceGroup }}
-          echo "::set-output name=value::${RG_INPUT:-my-resource-group-3}"
+          echo "::set-output name=value::${RG_INPUT:-my-resource-group-1}"
       - name: Init vm type
         id: vmType
         run: |

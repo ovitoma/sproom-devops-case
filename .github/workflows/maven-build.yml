@@ -29,13 +29,7 @@ jobs:
       - name: Build project 
         run: cd file-service; mvn -B package
 
-      - name: Upload the nested template to storage
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-              az storage file upload --account-key ${{ secrets.AZURE_STORAGE_KEY }} --account-name ovistorageaccount --source azure/nested/ipAddr.json --path ipAddr.json --share-name nested
-
-      - name: Upload the scripts
+       - name: Upload the scripts
         uses: azure/CLI@v1
         with:
           inlineScript: |

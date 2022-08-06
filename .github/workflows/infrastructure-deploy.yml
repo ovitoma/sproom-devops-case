@@ -6,7 +6,7 @@ on:
       resourceGroup:
         description: 'Azure resource group used for deployment'     
         required: true
-        default: my-resource-group-3
+        default: my-resource-group-1
         type: string
     secrets:
       AZURE_SUBSCRIPTION_ID:
