@@ -1,14 +1,18 @@
-name: Azure deploy
+name: Azure infrastructure deploy
 
 on: 
-  workflow_call:
+  workflow_dispatch:
     inputs:
       resourceGroup:
-        type: string
+        description: 'Azure resource group used for deployment'     
         required: true
-      projectName:
+        default: 'my-resource-group-3' 
         type: string
+      vmType:
+        description: 'Vm Type'     
         required: true
+        default: 'staging' 
+        type: string
     secrets:
       AZURE_SUBSCRIPTION_ID:
         required: true

@@ -1,6 +1,6 @@
 
 
-name: Azure deploy
+name: Azure VM deploy
 
 on: 
   workflow_call:

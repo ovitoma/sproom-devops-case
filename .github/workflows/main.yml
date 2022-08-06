@@ -11,7 +11,7 @@ on:
       resourceGroup:
         description: 'Azure resource group used for deployment'     
         required: true
-        default: 'my-resource-group-1' 
+        default: 'my-resource-group-3' 
         type: string
       vmType:
         description: 'Vm Type'     
@@ -44,7 +44,7 @@ jobs:
       AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
 
   call-azure-deploy:
-    uses: ./.github/workflows/azure-deploy.yml
+    uses: ./.github/workflows/vm-deploy.yml
     with:
       resourceGroup: ${{ needs.init.outputs.rg }}
       projectName: ${{ needs.init.outputs.project }}
