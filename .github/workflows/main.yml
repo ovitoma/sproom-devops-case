@@ -29,16 +29,14 @@ jobs:
   init:
     runs-on: ubuntu-latest
     steps:
+      - name: Get current date
+        id: vmId
+        run: echo "::set-output name=date::$(date +'%Y%m%dT%H%M%S')"
       - name: Init resource group name
         id: rg
         run: |
           RG_INPUT=${{ github.event.inputs.resourceGroup }}
           echo "::set-output name=value::${RG_INPUT:-my-resource-group-1}"
-      - name: Init vm type
-        id: vmType
-        run: |
-          VM_TYPE_INPUT=${{ github.event.inputs.vmType }}
-          echo "::set-output name=value::${VM_TYPE_INPUT:-staging}"
       - name: Init ip address
         id: ipAddr
         run: |
@@ -46,7 +44,7 @@ jobs:
           echo "::set-output name=value::${VM_TYPE_INPUT:-20.216.130.193}"
     outputs:
       rg: ${{ steps.rg.outputs.value }}
-      vmType: ${{ steps.vmType.outputs.value }}
+      vmId: ${{ steps.vmId.outputs.value }}
       ipAddr: ${{ steps.ipAddr.outputs.value }}
 
   call-build:
@@ -58,7 +56,7 @@ jobs:
     uses: ./.github/workflows/vm-deploy.yml
     with:
       resourceGroup: ${{ needs.init.outputs.rg }}
-      vmType: ${{ needs.init.outputs.vmType }}
+      vmId: ${{ needs.init.outputs.vmId }}
     secrets:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}

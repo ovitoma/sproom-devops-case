@@ -23,15 +23,11 @@
         "description": "Specifies a name for generating resource names."
       }
     },
-    "vmType": {
+    "vmId": {
       "type": "string",
-      "allowedValues": [
-        "prod",
-        "staging"
-      ],
-      "defaultValue": "staging",
+      "defaultValue": "1",
       "metadata": {
-        "description": "Type of VM."
+        "description": "VM identifier (timestamp)."
       }
     },
     "location": {
@@ -70,10 +66,10 @@
   "variables": {
     "vNetName": "[concat(parameters('projectName'), '-vnet')]",
     "vmSubnetName": "vm-snet",
-    "vmName": "[concat(parameters('projectName'), '-vm-', parameters('vmType'))]",
-    "networkInterfaceName": "[concat(parameters('projectName'), '-nic-', parameters('vmType'))]",
+    "vmName": "[concat(parameters('projectName'), '-vm-', parameters('vmId'))]",
+    "networkInterfaceName": "[concat(parameters('projectName'), '-nic-', parameters('vmId'))]",
     "lbName": "[concat(parameters('projectName'), '-lb')]",
-    "backendPoolName": "[concat(parameters('projectName'), '-backend-pool-', parameters('vmType'))]",
+    "backendPoolName": "[concat(parameters('projectName'), '-backend-pool-', parameters('vmId'))]",
     "availabilitySetName": "[concat(parameters('projectName'), '-avail-set')]",
     "appLocation": "[concat(parameters('_artifactsLocation'), '/app')]"
   },
