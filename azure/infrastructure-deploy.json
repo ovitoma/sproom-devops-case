@@ -142,13 +142,13 @@
               "protocol": "Tcp",
               "loadDistribution": "Default",
               "probe": {
-                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('vNetName'), 'health-check')]"
+                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('lbName'), 'health-check')]"
               },
               "disableOutboundSnat": true,
               "enableTcpReset": false,
               "backendAddressPools": [
                 {
-                  "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('vNetName'), variables('prodBackendPoolName'))]"
+                  "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('lbName'), variables('prodBackendPoolName'))]"
                 }
               ]
             }
@@ -165,13 +165,13 @@
               "protocol": "Tcp",
               "loadDistribution": "Default",
               "probe": {
-                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('vNetName'), 'health-check')]"
+                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('lbName'), 'health-check')]"
               },
               "disableOutboundSnat": true,
               "enableTcpReset": false,
               "backendAddressPools": [
                 {
-                  "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('vNetName'), variables('stagingBackendPoolName'))]"
+                  "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('lbName'), variables('stagingBackendPoolName'))]"
                 }
               ]
             }
