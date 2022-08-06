@@ -13,11 +13,6 @@ on:
         required: true
         default: 'my-resource-group-1' 
         type: string
-      vmType:
-        description: 'Vm Type'     
-        required: true
-        default: 'staging' 
-        type: string
       ipAddr:
         description: 'Load balancer IP Address'
         required: true
@@ -30,8 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get current date
-        id: vmId
-        run: echo "::set-output name=date::$(date +'%Y%m%dT%H%M%S')"
+        id: date
+        run: |
+          echo "::set-output name=date::$(date +'%Y%m%dT%H%M%S')"
       - name: Init resource group name
         id: rg
         run: |
@@ -44,7 +40,7 @@ jobs:
           echo "::set-output name=value::${VM_TYPE_INPUT:-20.216.130.193}"
     outputs:
       rg: ${{ steps.rg.outputs.value }}
-      vmId: ${{ steps.vmId.outputs.value }}
+      vmId: ${{ steps.date.outputs.value }}
       ipAddr: ${{ steps.ipAddr.outputs.value }}
 
   call-build:
