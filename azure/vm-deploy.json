@@ -69,22 +69,35 @@
     "vmName": "[concat(parameters('projectName'), '-vm-', parameters('vmId'))]",
     "networkInterfaceName": "[concat(parameters('projectName'), '-nic-', parameters('vmId'))]",
     "lbName": "[concat(parameters('projectName'), '-lb')]",
+    "publicIPAddressName": "[concat(parameters('projectName'), '-ip-', parameters('vmId'))]",
     "backendPoolName": "[concat(parameters('projectName'), '-backend-pool-staging')]",
     "availabilitySetName": "[concat(parameters('projectName'), '-avail-set')]",
     "appLocation": "[concat(parameters('_artifactsLocation'), '/app')]"
   },
-  "resources": [   
+  "resources": [
     {
-      "type" : "Microsoft.Compute/availabilitySets",
+      "type": "Microsoft.Compute/availabilitySets",
       "apiVersion": "2021-11-01",
       "name": "[variables('availabilitySetName')]",
       "location": "[parameters('location')]",
       "properties": {
         "platformFaultDomainCount": 2,
         "platformUpdateDomainCount": 20
-      }, 
+      },
       "sku": {
         "name": "Aligned"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2021-03-01",
+      "name": "[variables('publicIPAddressName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      },
+      "sku": {
+        "name": "Basic"
       }
     },
     {
@@ -92,19 +105,25 @@
       "apiVersion": "2021-03-01",
       "name": "[variables('networkInterfaceName')]",
       "location": "[parameters('location')]",
-       "properties": {
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+      ],
+      "properties": {
         "ipConfigurations": [
           {
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+              },
               "subnet": {
                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vmSubnetName'))]"
               },
               "loadBalancerBackendAddressPools": [
                 {
                   "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('lbName'), variables('backendPoolName'))]"
-                }                
+                }
               ]
             }
           }
