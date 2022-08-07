@@ -47,10 +47,8 @@ cd /home/$USERNAME
 curl "${AZURE_CONNECTION_STRING}/${APP}${AZURE_SAS_TOKEN}" -o $APP >> $LOG 2>&1
 
 echo "[INFO] Installing application" >> $LOG 2>&1
-mv $WORKING_DIR "${WORKING_DIR}_${NOW}" 2> /dev/null
-
 mkdir $WORKING_DIR
-unzip /home/$USERNAME/$APP -d $WORKING_DIR
+unzip /home/$USERNAME/$APP -d $WORKING_DIR >> $LOG 2>&1
 
 sed -i "s@java@/usr/java/openjdk/jdk-18.0.2/bin/java@g" $WORKING_DIR/start-app.sh
 chmod +x $WORKING_DIR/start-app.sh
@@ -59,11 +57,6 @@ sed -i "s@config:.*@config: config/log4j2.xml@g" $WORKING_DIR/config/application
 
 chown -R $USERNAME:$USERNAME $WORKING_DIR
 
-
-echo "[INFO] Stop the service (if running)" >> $LOG 2>&1
-systemctl stop file-service.service >> $LOG 2>&1
-
-rm -rf /etc/systemd/system/file-service.service
 echo "[Unit]
 Description=File Service 
 After=syslog.target network.target
