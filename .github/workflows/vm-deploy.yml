@@ -67,12 +67,12 @@ jobs:
         run: |
           echo "::set-output name=value::$(date +'%Y%m%dT%H%M%S')"
 
-      - name: Init resource group name
+      - name: Init VM id
         id: vmId
         run: |
           VM_ID_INPUT=${{ inputs.vmId }}
           VM_ID_DEFAULT="${{ steps.date.outputs.value }}"
-          echo "::set-output name=value::${VM_ID_INPUT:VM_ID_DEFAULT}"
+          echo "::set-output name=value::${VM_ID_INPUT:-$VM_ID_DEFAULT}"
 
       - name: Deploy infrastructure (ARM)
         id: infra
