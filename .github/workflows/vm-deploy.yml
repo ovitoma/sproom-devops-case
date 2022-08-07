@@ -81,6 +81,7 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ inputs.resourceGroup }}
           template: azure/vm-deploy.json
+          deploymentName: vm-deploy-${{ steps.vmId.outputs.value }}
           parameters:
             _artifactsLocation="${{ secrets.AZURE_ARTIFACTS_LOCATION }}"
             _artifactsLocationSasToken="${{ secrets.AZURE_ARTIFACTS_LOCATION_SAS_TOKEN }}"            

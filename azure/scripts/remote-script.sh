@@ -16,27 +16,19 @@ echo "[INFO] USERNAME=${USERNAME}" >> $LOG 2>&1
 
 ### unzip
 echo "[INFO] Install unzip" >> $LOG 2>&1
-if [ $(dpkg-query -W -f='${Status}' unzip 2>/dev/null | grep -c "ok installed") -eq 0 ];
-then
-  apt-get install -y unzip;
-fi
+apt-get install -y unzip >> $LOG 2>&1
 
 ### java
-JAVA_EXE=/usr/java/openjdk/jdk-18.0.2/bin/java
-if [ -f "$JAVA_EXE" ]; then
-    echo "[INFO] java already installed.!" >> $LOG 2>&1
-else 
-    echo "[INFO] Download&install java" >> $LOG 2>&1
-    rm -rf /tmp/java
-    wget https://download.java.net/java/GA/jdk18.0.2/f6ad4b4450fd4d298113270ec84f30ee/9/GPL/openjdk-18.0.2_linux-x64_bin.tar.gz -P /tmp/java  >> $LOG 2>&1
+echo "[INFO] Download&install java" >> $LOG 2>&1
+rm -rf /tmp/java
+wget https://download.java.net/java/GA/jdk18.0.2/f6ad4b4450fd4d298113270ec84f30ee/9/GPL/openjdk-18.0.2_linux-x64_bin.tar.gz -P /tmp/java  >> $LOG 2>&1
 
-    mkdir -p /usr/java/openjdk
-    cd /usr/java/openjdk
-    tar -xzvf /tmp/java/openjdk-18.0.2_linux-x64_bin.tar.gz --directory /usr/java/openjdk >> $LOG 2>&1
-    if [ $? -gt 0 ]; then
-        echo "[ERROR] Error unpacking java!" >> $LOG 2>&1
-        exit 1
-    fi
+mkdir -p /usr/java/openjdk
+cd /usr/java/openjdk
+tar -xzvf /tmp/java/openjdk-18.0.2_linux-x64_bin.tar.gz --directory /usr/java/openjdk >> $LOG 2>&1
+if [ $? -gt 0 ]; then
+    echo "[ERROR] Error unpacking java!" >> $LOG 2>&1
+    exit 1
 fi
 
 ### APP SERVICE
