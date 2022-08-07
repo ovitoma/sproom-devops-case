@@ -94,7 +94,8 @@
       "name": "[variables('publicIPAddressName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "publicIPAllocationMethod": "Static"
+        "publicIPAllocationMethod": "Static",
+        "deleteOption": "Delete"
       },
       "sku": {
         "name": "Standard"
@@ -115,7 +116,8 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]",
+                "deleteOption": "Delete"
               },
               "subnet": {
                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vmSubnetName'))]"
@@ -168,13 +170,17 @@
             "version": "latest"
           },
           "osDisk": {
-            "createOption": "fromImage"
+            "createOption": "fromImage",
+            "deleteOption": "Delete"
           }
         },
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]",
+              "properties": {
+                "deleteOption": "Delete"
+              }
             }
           ]
         }

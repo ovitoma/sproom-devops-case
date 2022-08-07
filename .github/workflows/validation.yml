@@ -76,8 +76,44 @@ jobs:
         run: |
           echo "::set-output name=value::$(awk -F[-/?] '{print $19}' <<< ${{ steps.oldVmResId.outputs.value }})" 
 
-      - name: Remove old VM from production
+      # - name: Remove old VM from production
+      #   uses: azure/CLI@v1
+      #   with:
+      #     inlineScript: |
+      #       az network nic ip-config address-pool remove --resource-group ${{ inputs.resourceGroup }} --address-pool file-service-backend-pool-prod --ip-config-name ipconfig1 --lb-name file-service-lb --nic-name file-service-nic-${{ steps.oldVmId.outputs.value }}
+
+      - name: Retrieve old VM disk id
+        uses: azure/CLI@v1
+        id: oldDiskId
+        with:
+          inlineScript: |
+            vmDiskId=$(az vm show --resource-group ${{ inputs.resourceGroup }} --name file-service-vm-${{ steps.oldVmId.outputs.value }} --query "storageProfile.osDisk.managedDisk.id" --out tsv)
+            echo "::set-output name=value::$vmDiskId"
+
+      - name: Delete old VM file-service-vm-${{ steps.oldVmId.outputs.value }}
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az network nic ip-config address-pool remove --resource-group ${{ inputs.resourceGroup }} --address-pool file-service-backend-pool-prod --ip-config-name ipconfig1 --lb-name file-service-lb --nic-name file-service-nic-${{ steps.oldVmId.outputs.value }}
+            az vm delete --resource-group ${{ inputs.resourceGroup }} --name file-service-vm-${{ steps.oldVmId.outputs.value }} --yes
+
+      # - name: Delete old VM disk
+      #   uses: azure/CLI@v1
+      #   with:
+      #     inlineScript: |
+      #       az disk delete --ids ${{ steps.oldDiskId.outputs.value }} --yes
+
+      # - name: Delete old VM NIC
+      #   uses: azure/CLI@v1
+      #   with:
+      #     inlineScript: |
+      #        az network nic delete --resource-group ${{ inputs.resourceGroup } --name file-service-nic-${{ steps.oldVmId.outputs.value }}
+
+      # - name: Delete old VM public ip
+      #   uses: azure/CLI@v1
+      #   with:
+      #     inlineScript: |
+      #         az network public-ip delete --resource-group  ${{ inputs.resourceGroup } --name file-service-ip-vm-${{ steps.oldVmId.outputs.value }}
+
+
+
+
