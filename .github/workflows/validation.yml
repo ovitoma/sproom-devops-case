@@ -61,3 +61,22 @@ jobs:
         with:
           inlineScript: |
             az network nic ip-config address-pool add --resource-group ${{ inputs.resourceGroup }} --address-pool file-service-backend-pool-prod --ip-config-name ipconfig1 --lb-name file-service-lb --nic-name file-service-nic-${{ inputs.vmId }}
+
+      - name: Extract old VM resource id
+        uses: azure/CLI@v1
+        id: oldVmResId
+        with:
+          inlineScript: |
+            vmResId=$(az network lb address-pool address list --resource-group ${{ inputs.resourceGroup }} --lb-name file-service-lb --pool-name file-service-backend-pool-prod --query "[].networkInterfaceIpConfiguration.id" --output tsv --only-show-errors)
+            echo "::set-output name=value::$vmResId"
+
+      - name: Extract old VM id
+        id: oldVmId
+        run: |
+          echo "::set-output name=value::$(awk -F[-/?] '{print $19}' <<< ${{ steps.oldVmResId.outputs.value }})" 
+
+      - name: Remove old VM from production
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az network nic ip-config address-pool remove --resource-group ${{ inputs.resourceGroup }} --address-pool file-service-backend-pool-prod --ip-config-name ipconfig1 --lb-name file-service-lb --nic-name file-service-nic-${{ steps.oldVmId.outputs.value }}

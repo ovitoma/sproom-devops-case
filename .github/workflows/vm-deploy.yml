@@ -47,17 +47,10 @@ jobs:
         with:
           inlineScript: |
               version=$(az storage file list --account-key ${{ secrets.AZURE_STORAGE_KEY }} --account-name ovistorageaccount --share-name app --query "[].{name:name}" --output tsv)
-              echo "::set-output name=version::$version"
+              echo "::set-output name=value::$version"
 
       - name: App version
-        run: echo ${{ steps.app.outputs.version }} 
-
-      # - name: Remove vm extension
-      #   uses: azure/CLI@v1
-      #   continue-on-error: true
-      #   with:
-      #     inlineScript: |
-      #         az vm extension delete -g ${{ inputs.resourceGroup }} --vm-name file-serice-vm-${{ inputs.vmId }} -n remote-script
+        run: echo ${{ steps.app.outputs.value }} 
 
       - name: Deploy infrastructure (ARM)
         id: infra
@@ -72,10 +65,4 @@ jobs:
             vmId=${{ inputs.vmId }}
             adminUsername=${{ secrets.VM_ADMIN_USERNAME }}
             adminPublicKey="${{ secrets.VM_ADMIN_PUBLIC_KEY }}"
-            application=${{ steps.app.outputs.version }}            
-
-      # - name: Add VM to inbound nat rule
-      #   uses: azure/CLI@v1
-      #   with:
-      #     inlineScript: |
-      #         az network nic ip-config inbound-nat-rule add --ip-config-name ipconfig1 --resource-group ${{ inputs.resourceGroup }} --lb-name file-service-lb  --nic-name file-service-nic-${{ inputs.vmType }} --inbound-nat-rule file-service-net-rule-${{ inputs.vmType }}
+            application=${{ steps.app.outputs.value }}            
