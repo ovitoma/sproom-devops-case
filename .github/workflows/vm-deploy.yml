@@ -1,5 +1,3 @@
-
-
 name: Azure VM deploy
 
 on: 
@@ -76,4 +74,18 @@ jobs:
             vmId=${{ inputs.vmId }}
             adminUsername=${{ secrets.VM_ADMIN_USERNAME }}
             adminPublicKey="${{ secrets.VM_ADMIN_PUBLIC_KEY }}"
-            application=${{ steps.app.outputs.value }}            
+            application=${{ steps.app.outputs.value }}
+
+      - name: Move to production if worlflow event was triggered manually
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az network nic ip-config address-pool remove --resource-group ${{ inputs.resourceGroup }} --address-pool file-service-backend-pool-staging --ip-config-name ipconfig1 --lb-name file-service-lb --nic-name file-service-nic-${{ inputs.vmId }}
+
+      - name: Add VM to production if workflow event was triggered manually
+        if: ${{ github.event_name == 'workflow_dispatch' }} 
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az network nic ip-config address-pool add --resource-group ${{ inputs.resourceGroup }} --address-pool file-service-backend-pool-prod --ip-config-name ipconfig1 --lb-name file-service-lb --nic-name file-service-nic-${{ inputs.vmId }}
