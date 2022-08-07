@@ -16,7 +16,7 @@ on:
       ipAddr:
         description: 'Load balancer IP Address'
         required: true
-        default: 20.216.142.72
+        default: 20.111.46.5
         type: string
 
 jobs:
@@ -37,7 +37,7 @@ jobs:
         id: ipAddr
         run: |
           VM_TYPE_INPUT=${{ github.event.inputs.ipAddr }}
-          echo "::set-output name=value::${VM_TYPE_INPUT:-20.216.142.72}"
+          echo "::set-output name=value::${VM_TYPE_INPUT:-20.111.46.5}"
     outputs:
       rg: ${{ steps.rg.outputs.value }}
       vmId: ${{ steps.date.outputs.value }}
