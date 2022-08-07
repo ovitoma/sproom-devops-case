@@ -100,5 +100,5 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-              az network public-ip delete --resource-group  ${{ inputs.resourceGroup } --name file-service-ip-vm-${{ steps.oldVmId.outputs.value }}
+              az network public-ip delete --resource-group  ${{ inputs.resourceGroup }} --name file-service-ip-vm-${{ steps.oldVmId.outputs.value }}
 
