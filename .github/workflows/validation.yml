@@ -96,24 +96,9 @@ jobs:
           inlineScript: |
             az vm delete --resource-group ${{ inputs.resourceGroup }} --name file-service-vm-${{ steps.oldVmId.outputs.value }} --yes
 
-      # - name: Delete old VM disk
-      #   uses: azure/CLI@v1
-      #   with:
-      #     inlineScript: |
-      #       az disk delete --ids ${{ steps.oldDiskId.outputs.value }} --yes
-
-      # - name: Delete old VM NIC
-      #   uses: azure/CLI@v1
-      #   with:
-      #     inlineScript: |
-      #        az network nic delete --resource-group ${{ inputs.resourceGroup } --name file-service-nic-${{ steps.oldVmId.outputs.value }}
-
-      # - name: Delete old VM public ip
-      #   uses: azure/CLI@v1
-      #   with:
-      #     inlineScript: |
-      #         az network public-ip delete --resource-group  ${{ inputs.resourceGroup } --name file-service-ip-vm-${{ steps.oldVmId.outputs.value }}
-
-
-
+      - name: Delete old VM public ip
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+              az network public-ip delete --resource-group  ${{ inputs.resourceGroup } --name file-service-ip-vm-${{ steps.oldVmId.outputs.value }}
 
