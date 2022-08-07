@@ -77,14 +77,14 @@ jobs:
             application=${{ steps.app.outputs.value }}
 
       - name: Move to production if worlflow event was triggered manually
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: github.event_name == 'workflow_dispatch'
         uses: azure/CLI@v1
         with:
           inlineScript: |
             az network nic ip-config address-pool remove --resource-group ${{ inputs.resourceGroup }} --address-pool file-service-backend-pool-staging --ip-config-name ipconfig1 --lb-name file-service-lb --nic-name file-service-nic-${{ inputs.vmId }}
 
       - name: Add VM to production if workflow event was triggered manually
-        if: ${{ github.event_name == 'workflow_dispatch' }} 
+        if: github.event_name == 'workflow_dispatch'
         uses: azure/CLI@v1
         with:
           inlineScript: |
