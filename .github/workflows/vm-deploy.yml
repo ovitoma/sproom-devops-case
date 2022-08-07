@@ -14,6 +14,31 @@ on:
     secrets:
       AZURE_SUBSCRIPTION_ID:
         required: true
+      AZURE_CREDENTIALS:
+        required: true
+      AZURE_STORAGE_KEY:
+        required: true
+      AZURE_ARTIFACTS_LOCATION:
+        required: true
+      AZURE_ARTIFACTS_LOCATION_SAS_TOKEN:
+        required: true
+      VM_ADMIN_USERNAME:
+        required: true
+      VM_ADMIN_PUBLIC_KEY:
+        required: true
+
+  workflow_dispatch:
+    inputs:
+      resourceGroup:
+        description: 'Azure resource group used for deployment'     
+        required: true
+        default: my-resource-group-1
+        type: string
+      vmId:
+        type: string
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        required: true
         default: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CREDENTIALS:
         required: true
@@ -34,30 +59,6 @@ on:
         required: true
         default: ${{ secrets.VM_ADMIN_PUBLIC_KEY }}
 
-  workflow_dispatch:
-    inputs:
-      resourceGroup:
-        description: 'Azure resource group used for deployment'     
-        required: true
-        default: my-resource-group-1
-        type: string
-      vmId:
-        type: string
-        required: true
-      AZURE_SUBSCRIPTION_ID:
-        required: true
-      AZURE_CREDENTIALS:
-        required: true
-      AZURE_STORAGE_KEY:
-        required: true
-      AZURE_ARTIFACTS_LOCATION:
-        required: true
-      AZURE_ARTIFACTS_LOCATION_SAS_TOKEN:
-        required: true
-      VM_ADMIN_USERNAME:
-        required: true
-      VM_ADMIN_PUBLIC_KEY:
-        required: true
 
 jobs:
 
