@@ -14,10 +14,6 @@ echo "[INFO] APP=${APP}" >> $LOG 2>&1
 USERNAME=$4
 echo "[INFO] USERNAME=${USERNAME}" >> $LOG 2>&1
 
-### unzip
-echo "[INFO] Install unzip" >> $LOG 2>&1
-apt-get install -y unzip >> $LOG 2>&1
-
 ### java
 echo "[INFO] Download&install java" >> $LOG 2>&1
 rm -rf /tmp/java
@@ -40,7 +36,8 @@ curl "${AZURE_CONNECTION_STRING}/${APP}${AZURE_SAS_TOKEN}" -o $APP >> $LOG 2>&1
 
 echo "[INFO] Installing application" >> $LOG 2>&1
 mkdir $WORKING_DIR
-unzip /home/$USERNAME/$APP -d $WORKING_DIR >> $LOG 2>&1
+cd $WORKING_DIR
+/usr/java/openjdk/jdk-18.0.2/bin/jar xf /home/$USERNAME/$APP >> $LOG 2>&1
 
 sed -i "s@java@/usr/java/openjdk/jdk-18.0.2/bin/java@g" $WORKING_DIR/start-app.sh
 chmod +x $WORKING_DIR/start-app.sh
