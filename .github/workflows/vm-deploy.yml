@@ -37,6 +37,7 @@ on:
       vmId:
         type: string
         required: true
+    secrets:
       AZURE_SUBSCRIPTION_ID:
         required: true
         default: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
