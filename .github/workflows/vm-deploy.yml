@@ -37,29 +37,6 @@ on:
       vmId:
         type: string
         required: true
-    secrets:
-      AZURE_SUBSCRIPTION_ID:
-        required: true
-        default: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      AZURE_CREDENTIALS:
-        required: true
-        default: ${{ secrets.AZURE_CREDENTIALS }}
-      AZURE_STORAGE_KEY:
-        required: true
-        default: ${{ secrets.AZURE_STORAGE_KEY }}
-      AZURE_ARTIFACTS_LOCATION:
-        required: true
-        default: ${{ secrets.AZURE_ARTIFACTS_LOCATION }}
-      AZURE_ARTIFACTS_LOCATION_SAS_TOKEN:
-        required: true
-        default: ${{ secrets.AZURE_ARTIFACTS_LOCATION_SAS_TOKEN }}
-      VM_ADMIN_USERNAME:
-        required: true
-        default: ${{ secrets.VM_ADMIN_USERNAME }}
-      VM_ADMIN_PUBLIC_KEY:
-        required: true
-        default: ${{ secrets.VM_ADMIN_PUBLIC_KEY }}
-
 
 jobs:
 
