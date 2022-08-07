@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
+/**
+ * Initializes the counters used to monitor file downloads.
+ */
 @Component
 public class FileMonitor {
 

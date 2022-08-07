@@ -21,6 +21,9 @@ import java.nio.file.Path;
 
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 
+/**
+ * Used to return a random file from the input folder.
+ */
 @RestController
 public class FileDownloadController {
 
@@ -38,6 +41,11 @@ public class FileDownloadController {
         this.randomFile = randomFile;
     }
 
+    /**
+     * Returns a random file from the input folder.
+     *
+     * @return ResponseEntity
+     */
     @GetMapping("/randomFile")
     public ResponseEntity<?> randomFile() {
 
@@ -70,6 +78,11 @@ public class FileDownloadController {
         return ResponseEntity.ok().contentType(mediaType).header(HttpHeaders.CONTENT_DISPOSITION, headerValue).body(urlResource);
     }
 
+    /**
+     * Uses an external pdf java library to determine if the pdf is corrupt.
+     *
+     * @param file Path
+     */
     private void checkIfCorrupt(Path file) {
 
         try {
@@ -82,6 +95,12 @@ public class FileDownloadController {
         }
     }
 
+    /**
+     * Extracts the file MediaType
+     *
+     * @param file Path to the file.
+     * @return MediaType
+     */
     private MediaType getMediaType(Path file) {
         try {
             return new MediaType(MimeTypeUtils.parseMimeType(Files.probeContentType(file)));

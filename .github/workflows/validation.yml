@@ -44,8 +44,7 @@ jobs:
       - name: Run the API and Postman's tests
         id: check-ok
         run: | 
-          newman run "validation/file_service.postman_collection.json" --env-var "base_url=${{ inputs.ipAddr }}"  
-
+          newman run "validation/file_service.postman_collection.json" --env-var "base_url=${{ inputs.ipAddr }}"
       - name: Login to Azure
         uses: azure/login@v1
         with:

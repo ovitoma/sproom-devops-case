@@ -34,11 +34,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}:8080/randomFile",
+					"raw": "{{base_url}}:{{base_port}}/randomFile",
 					"host": [
 						"{{base_url}}"
 					],
-					"port": "8080",
+					"port": [
+						"{{base_port}}"
+					],
 					"path": [
 						"randomFile"
 					]
@@ -51,6 +53,10 @@
 		{
 			"key": "base_url",
 			"value": "localhost"
+		},
+		{
+			"key": "base_port",
+			"value": "8081"
 		}
 	]
 }
