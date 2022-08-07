@@ -20,7 +20,7 @@ on:
         default: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_STORAGE_KEY:
         required: true
-         default: ${{ secrets.AZURE_STORAGE_KEY }}
+        default: ${{ secrets.AZURE_STORAGE_KEY }}
       AZURE_ARTIFACTS_LOCATION:
         required: true
         default: ${{ secrets.AZURE_ARTIFACTS_LOCATION }}
