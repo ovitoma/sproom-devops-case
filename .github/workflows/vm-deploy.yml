@@ -35,7 +35,6 @@ on:
       vmId:
         type: string
         required: true
-        default: $(date +'%Y%m%dT%H%M%S')
 
 jobs:
 
