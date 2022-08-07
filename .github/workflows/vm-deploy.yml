@@ -17,7 +17,7 @@ on:
         default: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CREDENTIALS:
         required: true
-         default: ${{ secrets.AZURE_CREDENTIALS }}
+        default: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_STORAGE_KEY:
         required: true
          default: ${{ secrets.AZURE_STORAGE_KEY }}
