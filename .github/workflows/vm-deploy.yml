@@ -62,6 +62,18 @@ jobs:
       - name: App version
         run: echo ${{ steps.app.outputs.value }} 
 
+      - name: Get current date
+        id: date
+        run: |
+          echo "::set-output name=value::$(date +'%Y%m%dT%H%M%S')"
+
+      - name: Init resource group name
+        id: vmId
+        run: |
+          VM_ID_INPUT=${{ inputs.vmId }}
+          VM_ID_DEFAULT=${{ steps.date.outputs.value }}
+          echo "::set-output name=value::${VM_ID_INPUT:VM_ID_DEFAULT}"
+
       - name: Deploy infrastructure (ARM)
         id: infra
         uses: azure/arm-deploy@v1
@@ -72,15 +84,10 @@ jobs:
           parameters:
             _artifactsLocation="${{ secrets.AZURE_ARTIFACTS_LOCATION }}"
             _artifactsLocationSasToken="${{ secrets.AZURE_ARTIFACTS_LOCATION_SAS_TOKEN }}"            
-            vmId=${{ inputs.vmId }}
+            vmId=${{ steps.vmId.outputs.value }}
             adminUsername=${{ secrets.VM_ADMIN_USERNAME }}
             adminPublicKey="${{ secrets.VM_ADMIN_PUBLIC_KEY }}"
-            application=${{ steps.app.outputs.value }}
-
-      - name: Get current date
-        id: date
-        run: |
-          echo "::set-output name=value::$(date +'%Y%m%dT%H%M%S')"
+            application=${{ steps.app.outputs.value }}  
 
       - name: Move to production if worlflow event was triggered manually
         if: inputs.initialDeploy == true
