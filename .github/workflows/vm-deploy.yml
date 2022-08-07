@@ -71,7 +71,7 @@ jobs:
         id: vmId
         run: |
           VM_ID_INPUT=${{ inputs.vmId }}
-          VM_ID_DEFAULT=${{ steps.date.outputs.value }}
+          VM_ID_DEFAULT="${{ steps.date.outputs.value }}"
           echo "::set-output name=value::${VM_ID_INPUT:VM_ID_DEFAULT}"
 
       - name: Deploy infrastructure (ARM)
