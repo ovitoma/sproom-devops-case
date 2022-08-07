@@ -11,7 +11,6 @@ class FileServiceApplicationTests {
 
 	@Autowired
 	private FileDownloadController fileDownloadController;
-
 	@Test
 	void contextLoads() {
 		assertThat(fileDownloadController).isNotNull();

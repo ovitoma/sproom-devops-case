@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith({SpringExtension.class})
 @WebMvcTest({FileDownloadController.class, FileMonitor.class, MicrometerRegistry.class, RandomFile.class})
 public class FileDownloadTest {
-
     @Autowired
     private MockMvc mockMvc;
 

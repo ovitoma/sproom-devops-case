@@ -27,19 +27,7 @@ public class FileDownloadController {
     private static final Logger logger = LogManager.getLogger(FileDownloadController.class);
 
     private final FileMonitor fileMonitor;
-//    private final MicrometerRegistry micrometerRegistry;
     RandomFile randomFile;
-
-//    Counter invalidPdfCounter;
-//    Counter pdfCounter;
-//    Counter pngCounter;
-//
-//    @Autowired
-//    public FileDownloadController(MicrometerRegistry micrometerRegistry) {
-//        this.micrometerRegistry = micrometerRegistry;
-//        initCounters();
-//    }
-
     @Autowired
     public FileDownloadController(FileMonitor fileMonitor) {
         this.fileMonitor =  fileMonitor;
@@ -101,10 +89,4 @@ public class FileDownloadController {
             throw new RuntimeException(e);
         }
     }
-
-//    private void initCounters() {
-//        invalidPdfCounter = this.micrometerRegistry.getMeterRegistry().counter("file-service.invalid-pdf");
-//        pdfCounter = this.micrometerRegistry.getMeterRegistry().counter("file-service.pdf");
-//        pngCounter = this.micrometerRegistry.getMeterRegistry().counter("file-service.png-counter");
-//    }
 }

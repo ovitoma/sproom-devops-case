@@ -12,17 +12,13 @@ import java.util.stream.Stream;
 
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
-
 @Component
 public class RandomFile {
-
     private final String filesPath;
-
     @Autowired
     public RandomFile(@Value("${file-service.path}") String filesPath) {
         this.filesPath = filesPath;
     }
-
     public Path getFile() throws IOException {
 
         Path filesPath = Paths.get(this.filesPath);
