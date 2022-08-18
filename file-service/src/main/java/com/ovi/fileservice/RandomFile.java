@@ -19,6 +19,13 @@ public class RandomFile {
     public RandomFile(@Value("${file-service.path}") String filesPath) {
         this.filesPath = filesPath;
     }
+
+    /**
+     * Returns a random file from the specified folder.
+     *
+     * @return Path to the file
+     * @throws IOException Throws exception if invalid path.
+     */
     public Path getFile() throws IOException {
 
         Path filesPath = Paths.get(this.filesPath);

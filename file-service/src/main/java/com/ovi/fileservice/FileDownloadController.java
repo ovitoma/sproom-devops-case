@@ -75,6 +75,7 @@ public class FileDownloadController {
             fileMonitor.getPngCounter().increment();
         }
 
+        fileMonitor.getTotal().increment();
         return ResponseEntity.ok().contentType(mediaType).header(HttpHeaders.CONTENT_DISPOSITION, headerValue).body(urlResource);
     }
 
